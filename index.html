@@ -8,71 +8,202 @@
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
     body { margin: 0; padding: 0; background-color: #f8f9fa; color: #212529; }
     header { background: #111827; color: white; text-align: center; padding: 2rem 1rem; }
-    header h1 { margin: 0; font-size: 2.2rem; letter-spacing: 1px; }
+    header h1 { margin: 0; font-size: 2.2rem; }
     .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    
+    /* Search Bar */
+    .search-container { margin-bottom: 1.5rem; }
+    .search-input { width: 100%; padding: 12px 16px; font-size: 1rem; border: 2px solid #e5e7eb; border-radius: 8px; outline: none; }
+    .search-input:focus { border-color: #2563eb; }
+
+    /* Product Grid */
     .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
-    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; }
-    .card img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; }
+    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .card img { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
+    .card img:hover { transform: scale(1.02); }
+    
     .category-badge { display: inline-block; background: #f3f4f6; color: #4b5563; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 12px; margin-top: 12px; text-transform: uppercase; width: fit-content; }
     .card h3 { margin: 10px 0 6px; font-size: 1.15rem; }
-    .price { font-size: 1.2rem; font-weight: bold; color: #059669; margin: 8px 0 14px; }
-    .btn-add { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; width: 100%; }
-    .btn-add:active { background: #1d4ed8; }
+    .price { font-size: 1.2rem; font-weight: bold; color: #059669; margin: 8px 0; }
+    
+    /* Dropdown & Form Controls */
+    .form-group { margin: 10px 0; display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+    .form-group select { padding: 8px; border-radius: 6px; border: 1px solid #d1d5db; font-size: 0.9rem; }
+    
+    /* Buttons & Stock Badges */
+    .stock-badge { display: inline-block; padding: 4px 8px; font-size: 0.8rem; font-weight: bold; border-radius: 6px; text-align: center; margin-bottom: 8px; cursor: pointer; border: none; }
+    .in-stock { background: #dcfce7; color: #15803d; }
+    .out-stock { background: #fee2e2; color: #b91c1c; }
+    
+    .btn-add { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; width: 100%; margin-top: 6px; }
+    .btn-add:disabled { background: #9ca3af; cursor: not-allowed; }
+
+    /* Image Modal / Popup */
+    .modal { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
+    .modal img { max-width: 90%; max-height: 85%; border-radius: 8px; }
+    .modal-close { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <header>
     <h1>yees Store</h1>
-    <p>Browse our featured products</p>
+    <p>Browse our collection</p>
   </header>
 
   <div class="container">
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" onkeyup="filterProducts()" placeholder="Search clothes by name...">
+    </div>
+
     <h2>Store Products</h2>
-    <div class="product-grid">
+    <div class="product-grid" id="productGrid">
 
       <div class="card">
-        <img src="0bd228896d075d85d21cdd71dfb1c9f6.jpg" alt="Product 1">
+        <img src="0bd228896d075d85d21cdd71dfb1c9f6.jpg" alt="Grey Hoodie & Denim" onclick="openModal(this.src)">
         <span class="category-badge">Featured</span>
-        <h3>Product Item 1</h3>
+        <h3>Grey Hoodie Set</h3>
+        <button class="stock-badge in-stock" onclick="toggleStock(this)">In Stock</button>
+        <div class="form-group">
+          <label>Size:</label>
+          <select>
+            <option>Small</option>
+            <option>Medium</option>
+            <option>Large</option>
+            <option>X-Large</option>
+          </select>
+        </div>
         <div class="price">$45.00</div>
         <button class="btn-add" onclick="alert('Added to cart!')">Add to Cart</button>
       </div>
 
       <div class="card">
-        <img src="31e5f42fed82b9b0ef6e05276906cdbc.jpg" alt="Product 2">
+        <img src="31e5f42fed82b9b0ef6e05276906cdbc.jpg" alt="Baggy Jeans Set" onclick="openModal(this.src)">
         <span class="category-badge">Featured</span>
-        <h3>Product Item 2</h3>
+        <h3>Baggy Jeans Outfit</h3>
+        <button class="stock-badge in-stock" onclick="toggleStock(this)">In Stock</button>
+        <div class="form-group">
+          <label>Size:</label>
+          <select>
+            <option>Small</option>
+            <option>Medium</option>
+            <option>Large</option>
+            <option>X-Large</option>
+          </select>
+        </div>
         <div class="price">$50.00</div>
         <button class="btn-add" onclick="alert('Added to cart!')">Add to Cart</button>
       </div>
 
       <div class="card">
-        <img src="69f91c5f95d47bcc90002241b84a84e2.jpg" alt="Product 3">
+        <img src="69f91c5f95d47bcc90002241b84a84e2.jpg" alt="Denim Shorts Set" onclick="openModal(this.src)">
         <span class="category-badge">Featured</span>
-        <h3>Product Item 3</h3>
+        <h3>Casual Denim Shorts</h3>
+        <button class="stock-badge in-stock" onclick="toggleStock(this)">In Stock</button>
+        <div class="form-group">
+          <label>Size:</label>
+          <select>
+            <option>Small</option>
+            <option>Medium</option>
+            <option>Large</option>
+            <option>X-Large</option>
+          </select>
+        </div>
         <div class="price">$35.00</div>
         <button class="btn-add" onclick="alert('Added to cart!')">Add to Cart</button>
       </div>
 
       <div class="card">
-        <img src="7588b7f16d1a698cb1d02f55f8d62411.jpg" alt="Product 4">
+        <img src="7588b7f16d1a698cb1d02f55f8d62411.jpg" alt="Product Item 4" onclick="openModal(this.src)">
         <span class="category-badge">Featured</span>
         <h3>Product Item 4</h3>
+        <button class="stock-badge in-stock" onclick="toggleStock(this)">In Stock</button>
+        <div class="form-group">
+          <label>Size:</label>
+          <select>
+            <option>Small</option>
+            <option>Medium</option>
+            <option>Large</option>
+            <option>X-Large</option>
+          </select>
+        </div>
         <div class="price">$60.00</div>
         <button class="btn-add" onclick="alert('Added to cart!')">Add to Cart</button>
       </div>
 
       <div class="card">
-        <img src="ecdeedb7322ec9c02209eec4d4a345d4.jpg" alt="Product 5">
+        <img src="ecdeedb7322ec9c02209eec4d4a345d4.jpg" alt="Product Item 5" onclick="openModal(this.src)">
         <span class="category-badge">Featured</span>
         <h3>Product Item 5</h3>
+        <button class="stock-badge in-stock" onclick="toggleStock(this)">In Stock</button>
+        <div class="form-group">
+          <label>Size:</label>
+          <select>
+            <option>Small</option>
+            <option>Medium</option>
+            <option>Large</option>
+            <option>X-Large</option>
+          </select>
+        </div>
         <div class="price">$40.00</div>
         <button class="btn-add" onclick="alert('Added to cart!')">Add to Cart</button>
       </div>
 
     </div>
   </div>
+
+  <!-- Image Popup Modal -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img id="modalImage" src="" alt="Full view">
+  </div>
+
+  <script>
+    // Search Filter Function
+    function filterProducts() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.getElementsByClassName('card');
+
+      for (let i = 0; i < cards.length; i++) {
+        const title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+        if (title.includes(input)) {
+          cards[i].style.display = "";
+        } else {
+          cards[i].style.display = "none";
+        }
+      }
+    }
+
+    // Toggle Stock Status
+    function toggleStock(btn) {
+      const card = btn.closest('.card');
+      const addBtn = card.querySelector('.btn-add');
+
+      if (btn.classList.contains('in-stock')) {
+        btn.classList.remove('in-stock');
+        btn.classList.add('out-stock');
+        btn.innerText = 'Out of Stock';
+        addBtn.disabled = true;
+        addBtn.innerText = 'Unavailable';
+      } else {
+        btn.classList.remove('out-stock');
+        btn.classList.add('in-stock');
+        btn.innerText = 'In Stock';
+        addBtn.disabled = false;
+        addBtn.innerText = 'Add to Cart';
+      }
+    }
+
+    // Image Modal Functions
+    function openModal(src) {
+      document.getElementById('imageModal').style.display = 'flex';
+      document.getElementById('modalImage').src = src;
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+  </script>
 
 </body>
 </html>
